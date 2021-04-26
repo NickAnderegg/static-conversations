@@ -7,8 +7,6 @@ from pprint import pprint
 import click
 from loguru import logger
 
-# from .auth import AuthCLI
-from ..github import GitHubAPI
 from ..config import ConvoConfig
 
 
@@ -234,13 +232,6 @@ class ConvoCLI(click.MultiCommand):
         return mod.cli
 
 
-# logger_levels = ", ".join([str(_) for _ in getattr(logger, "_core").levels.keys()])
-# logger_level_default = "ERROR"
-# log_level_help = (
-#     "This will set the log level of `stderr`. "
-#     f"Specify a log level from one of {{{logger_levels}}}."
-# )
-
 verbosity_help = (
     "Set the verbosity of the tool output. "
     "Can be specified up to five times to increase verbosity."
@@ -281,44 +272,6 @@ def cli(ctx, verbosity, quietness, **kwargs):
 
     ctx.config = ConvoConfig(ctx)
 
-    pprint(ctx.config.auth.username)
-    pprint(ctx.config.auth.parsed_content)
-
-
-# @click.group()
-# @click.pass_context
-# def cli(ctx):
-#     pass
-
-
-# cli.add_command(AuthCLI)
-
-# @click.group()
-# @click.pass_context
-# def cli(ctx):
-
-#     config = ConvoConfig()
-#     gh_api = GitHubAPI()
-
-#     # print(gh_api.USER_AGENT)
-
-#     ctx.ensure_object(dict)
-#     # stdin_stream = click.get_text_stream("stdin")
-
-#     # with stdin_stream as stdin:
-#     #     if not stdin.seekable():
-#     #         ctx.obj["STDIN"] = stdin.read()
-#     #     else:
-#     #         ctx.obj["STDIN"] = ""
-
-
-# @click.command(cls=AuthCLI)
-# def auth():
-#     pass
-
-
-# AuthCLI(cli)
 
 if __name__ == "__main__":
     cli(obj={})
-    # ConvoCLI(obj={})
