@@ -1,3 +1,9 @@
+"""Configure the Static Conversations tool.
+
+This module reads app configuration from environment variables. The variables
+currently read configure the user, authentication token, and repository.
+"""
+
 import os, sys
 
 from contextlib import contextmanager
@@ -13,15 +19,10 @@ yaml = YAML()
 
 
 class ConvoConfig(object):
-    def __init__(self):
-        self.home_dir = Path.home()
-        self.config_dir = self.home_dir / ".config" / "convo"
+    """Class for reading app configuration from environment variables."""
 
-        self.config_dir.mkdir(
-            mode=0o755,
-            parents=True,
-            exist_ok=True,
-        )
+    def __init__(self):
+        """Initialize a new ConvoConfig instance."""
 
         username_vars = ["CONVO_USER", "GITHUB_ACTOR"]
         username = self.get_env(*username_vars)
@@ -49,12 +50,40 @@ class ConvoConfig(object):
             "auth": token,
             "repo": repo,
         }
+        """A dict containing the authentication information read from
+        environment variables."""
 
     @staticmethod
-    def get_env(*keys, default=None):
+    def get_env(*keys: str, default: t.Any = None) -> t.Union[str, t.Any]:
+        """Read environment variables.
+
+        An arbitrary number of positional arguments specifying the names of
+        environment variables can be passed to this method. Each variable will
+        be checked in the order that it was passed to this method, and the value
+        of the first set variable will be returned. If none of the passed variables
+        are set, this method returns the value of the `default` keyword argument.
+
+        Parameters
+        ----------
+        *keys
+            One or more positional arguments that specify the environment variables
+            to be read, in order of priority.
+        default : None
+            The value to return if none of the environment variables are set.
+
+        Returns
+        -------
+        str or Any
+            The value of the highest-priority environment variable that is set,
+            or an arbitrary object specified by the `default` argument.
+        """
         for key in keys:
             val = os.getenv(key)
-            if val is not None:
+
+            # os.getenv will return `None` if it is not set, but it can also
+            # return an empty string if the environment variable has been set
+            # with an empty string. Therefore, we want to check for both.
+            if val is not None and val != "":
                 return val
 
         return default
